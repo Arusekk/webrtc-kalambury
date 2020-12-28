@@ -1,0 +1,33 @@
+{
+  "name": "webrtc-kalambury",
+  "version": "1.0.0",
+  "description": "Draw-guess game (university student project)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Arusekk/webrtc-kalambury.git"
+  },
+  "keywords": [
+    "kalambury",
+    "game",
+    "webrtc",
+    "draw",
+    "guess",
+    "drawing-guessing",
+    "draw-guess"
+  ],
+  "author": "Arusekk, forell, kubamarc",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/Arusekk/webrtc-kalambury/issues"
+  },
+  "homepage": "https://github.com/Arusekk/webrtc-kalambury#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^3.0.4"
+  }
+}
