@@ -1,0 +1,12 @@
+doctype html
+html
+  head
+    title Rooms — kalambury
+  body
+    h1 Kalambury
+    p
+      a(href='/draw.html') Nowy pokój
+    ul
+      each key in Object.keys(rooms)
+        li
+          a(href=`/viewer.html#${encodeURIComponent(JSON.stringify(rooms[key]))}`) Pokój #{key}
