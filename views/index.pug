@@ -5,8 +5,8 @@ html
   body
     h1 Kalambury
     p
-      a(href='/draw.html') Nowy pokój
+      a(href='/draw.html#${Math.floor(Math.random() * 1e6)}') Nowy pokój
     ul
-      each key in Object.keys(rooms)
+      each key in Object.keys(roomOwner)
         li
-          a(href=`/viewer.html#${encodeURIComponent(JSON.stringify(rooms[key]))}`) Pokój #{key}
+          a(href=`/viewer.html#${encodeURIComponent(key)}`) Pokój #{key}
