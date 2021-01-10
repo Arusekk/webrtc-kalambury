@@ -1,5 +1,9 @@
-const pc = new RTCPeerConnection();
-let signaler;
+const pc = new RTCPeerConnection({
+  iceServers: [{ urls: [
+    'stun:stun.stunprotocol.org:3478',
+  ] }],
+})
+let signaler
 
 pc.onnegotiationneeded = async () => {
   console.log('Negotiation needed')
@@ -13,7 +17,7 @@ const chan = pc.createDataChannel('sendDataChannel')
 chan.onopen = () => console.log('Connection successful!', chan)
 chan.onmessage = ({ data }) => {
   console.log('Got msg!', data)
-  krzyk.innerText = data;
+  picture.value = data;
 }
 
 // interface

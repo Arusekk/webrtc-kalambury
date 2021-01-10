@@ -1,0 +1,10 @@
+doctype html
+html(lang='pl')
+  head
+    title Draw — kalambury
+    link(rel='stylesheet' href='style.css' type='text/css')
+    script(src='/socket.io/socket.io.js' type='text/javascript')
+    script(src='bcast.js' type='text/javascript')
+  body
+    h1 Kalambury
+    textarea#picture(oninput='broadcast(this.value)' cols=80 rows=20)

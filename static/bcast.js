@@ -15,7 +15,11 @@ window.addEventListener('load', () => {
     if (connections[addr])
       pc = connections[addr]
     else {
-      pc = connections[addr] = new RTCPeerConnection()
+      pc = connections[addr] = new RTCPeerConnection({
+        iceServers: [{ urls: [
+          'stun:stun.stunprotocol.org:3478',
+        ] }],
+      })
 
       // set up handshake handlers
       pc.onicecandidate = ({ candidate }) => signaler.emit('candidate to', { candidate, addr })
@@ -28,8 +32,8 @@ window.addEventListener('load', () => {
       // set up success handling
       pc.ondatachannel = ({ channel }) => {
         console.log("Got connection", channel)
-        channel.send(currentData())
         activechannels.push(channel)
+        channel.send(picture.value)  // <==== access to picture
       }
     }
 

@@ -17,6 +17,12 @@ const currentRoom = {};
 app.get('/', (req, res) => {
   res.render('index', { roomOwner });
 });
+app.get('/draw', (req, res) => {
+  res.render('draw');
+});
+app.get('/view', (req, res) => {
+  res.render('view');
+});
 
 io.on('connection', socket => {
   console.log('client connected: ', socket.id);
