@@ -5,28 +5,29 @@ const pc = new RTCPeerConnection({
 })
 let signaler
 
-pc.onnegotiationneeded = async () => {
-  console.log('Negotiation needed')
-  await pc.setLocalDescription()
-  signaler.emit('sdp', pc.localDescription)
-}
-
-pc.onicecandidate = ({ candidate }) => signaler.emit('candidate', candidate)
-
-// prepare for successful connection
-// should be ordered by default, but let's be explicit
-const chan = pc.createDataChannel('sendDataChannel', {ordered: true})
-chan.onopen = () => console.log('Connection successful!', chan)
-chan.onmessage = ({ data }) => {
-  console.log('Got msg!', data.slice(0, 256))
-  handleViewMessage(JSON.parse(data))
-}
-
 // interface
 window.addEventListener('load', async () => {
   signaler = io();
 
-  // set up WebRTC handlers
+  // set up peer WebRTC handlers
+  pc.onnegotiationneeded = async () => {
+    console.log('Negotiation needed')
+    await pc.setLocalDescription()
+    signaler.emit('sdp', pc.localDescription)
+  }
+
+  pc.onicecandidate = ({ candidate }) => signaler.emit('candidate', candidate)
+
+  // prepare for successful connection
+  // should be ordered by default, but let's be explicit
+  const chan = pc.createDataChannel('sendDataChannel', {ordered: true})
+  chan.onopen = () => console.log('Connection successful!', chan)
+  chan.onmessage = ({ data }) => {
+    console.log('Got msg!', data.slice(0, 256))
+    handleViewMessage(JSON.parse(data))
+  }
+
+  // set up central WebRTC handlers
   signaler.on('sdp', async sdp => {
     console.log('got sdp', sdp)
     await pc.setRemoteDescription(sdp)
@@ -42,3 +43,5 @@ window.addEventListener('load', async () => {
   await pc.setLocalDescription()
   signaler.emit('join', { name: location.hash.slice(1), sdp: pc.localDescription })
 })
+
+// vi: et ts=2 sw=2
