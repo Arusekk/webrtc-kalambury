@@ -32,8 +32,11 @@ window.addEventListener('load', () => {
       // set up success handling
       pc.ondatachannel = ({ channel }) => {
         console.log("Got connection", channel)
+        channel.send(JSON.stringify({
+          type: 'img',
+          dataurl: picture.ctx.canvas.toDataURL()
+        }))
         activechannels.push(channel)
-        channel.send(picture.value)  // <==== access to picture
       }
     }
 

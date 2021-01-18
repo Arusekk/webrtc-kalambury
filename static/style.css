@@ -1,0 +1,62 @@
+:root {
+  --tool-size: 50px;
+  --gradient: linear-gradient(45deg, #b1a6d8, #c8a6d8, #d8a6cc, #d8a6a7, #edab80);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#game_header {
+  color: white;
+  background: var(--gradient);
+  margin: 0;
+  padding: 0.5em 2em;
+}
+
+#game_main {
+  padding: 2em;
+}
+
+#game_canvas {
+  border: 4px solid black;
+  cursor: crosshair;
+}
+
+#drawtools {
+  padding: 4px;
+}
+
+label {
+  cursor: pointer;
+}
+
+input[name='colorpick'] {
+  display: none;
+}
+
+.colorpreview {
+  display: inline-block;
+  box-sizing: border-box;
+  height: var(--tool-size);
+  width: var(--tool-size);
+}
+
+input:checked + .colorpreview {
+  border: 5px solid;
+  border-image-source: var(--gradient);
+  border-image-slice: 1;
+  box-shadow: inset 0 0 0 4px white;
+}
+
+.sizepreview {
+  height: var(--tool-size);
+  width: var(--tool-size);
+  fill: black;
+}
+
+.sizepick {
+  display: flex;
+  align-items: center;
+}

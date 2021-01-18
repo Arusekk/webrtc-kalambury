@@ -10,14 +10,16 @@ pc.onnegotiationneeded = async () => {
   await pc.setLocalDescription()
   signaler.emit('sdp', pc.localDescription)
 }
+
 pc.onicecandidate = ({ candidate }) => signaler.emit('candidate', candidate)
 
 // prepare for successful connection
-const chan = pc.createDataChannel('sendDataChannel')
+// should be ordered by default, but let's be explicit
+const chan = pc.createDataChannel('sendDataChannel', {ordered: true})
 chan.onopen = () => console.log('Connection successful!', chan)
 chan.onmessage = ({ data }) => {
-  console.log('Got msg!', data)
-  picture.value = data;
+  console.log('Got msg!', data.slice(0, 256))
+  handleViewMessage(JSON.parse(data))
 }
 
 // interface
