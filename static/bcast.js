@@ -11,6 +11,14 @@ window.addEventListener('load', () => {
 
   signaler.emit('room', location.hash.slice(1))
   signaler.on('disconnects', addr => delete connections[addr])
+
+  signaler.on('chat', msg => {
+    var item = document.createElement('div');
+    item.textContent = msg;
+    chat_history.appendChild(item)
+  });
+
+
   signaler.on('sdp from', async ({ sdp, addr }) => {
     console.log("wants to connect", addr, sdp)
     if (connections[addr])

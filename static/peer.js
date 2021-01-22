@@ -39,6 +39,12 @@ window.addEventListener('load', async () => {
   })
   signaler.on('candidate', async candidate => await pc.addIceCandidate(candidate))
 
+  signaler.on('chat', msg => {
+    var item = document.createElement('div');
+    item.textContent = msg;
+    chat_history.appendChild(item)
+  });
+
   // we want the creator to connect to us
   await pc.setLocalDescription()
   signaler.emit('join', { name: location.hash.slice(1), sdp: pc.localDescription })

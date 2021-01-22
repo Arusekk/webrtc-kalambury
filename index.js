@@ -24,6 +24,7 @@ app.get('/view', (req, res) => {
   res.render('view');
 });
 
+
 io.on('connection', socket => {
   console.log('client connected: ', socket.id);
   socket.on('room', name => {
@@ -36,6 +37,7 @@ io.on('connection', socket => {
 
     socket.on('disconnect', () => delete roomOwner[name]);
   });
+
   socket.on('join', ({ name, sdp }) => {
     console.log('join', socket.id, name, sdp);
     currentRoom[socket.id] = name;
@@ -44,6 +46,11 @@ io.on('connection', socket => {
   });
 
   socket.on('disconnect', () => delete currentRoom[socket.id]);
+
+  socket.on('chat', msg => {
+    io.emit('chat', msg);
+    console.log("chat:" + msg);
+  });
 
   // WebRTC
   socket.on('sdp', sdp => {
@@ -63,6 +70,7 @@ io.on('connection', socket => {
     console.log('candidate to', socket.id, candidate, addr);
     io.to(addr).emit('candidate', candidate);
   });
+
 });
 
 server.listen(process.env.PORT || 8000);
