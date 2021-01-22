@@ -1,12 +1,13 @@
 const activechannels = [],
       connections = {}
+let signaler
 
 function broadcast(data) {
   activechannels.forEach(chan => chan.send(data))
 }
 
 window.addEventListener('load', () => {
-  const signaler = io()
+  signaler = io()
 
   signaler.emit('room', location.hash.slice(1))
   signaler.on('disconnects', addr => delete connections[addr])
