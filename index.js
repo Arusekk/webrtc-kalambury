@@ -33,7 +33,6 @@ io.on('connection', socket => {
     socket.join(name);
 
     roomOwner[name] = socket.id;
-    console.log(io.sockets.adapter.rooms);
 
     socket.on('disconnect', () => delete roomOwner[name]);
   });
@@ -42,24 +41,24 @@ io.on('connection', socket => {
     console.log('join', socket.id, name, sdp);
     currentRoom[socket.id] = name;
     socket.join(name);
-    socket.to(roomOwner[name]).emit('sdp from', { sdp, addr: socket.id });
+    io.to(roomOwner[name]).emit('sdp from', { sdp, addr: socket.id });
   });
 
   socket.on('disconnect', () => delete currentRoom[socket.id]);
 
   socket.on('chat', msg => {
     io.emit('chat', msg);
-    console.log("chat:" + msg);
+    console.log("chat:", msg);
   });
 
   // WebRTC
   socket.on('sdp', sdp => {
     console.log('sdp', socket.id, sdp);
-    socket.to(roomOwner[currentRoom[socket.id]]).emit('sdp from', { sdp, addr: socket.id });
+    io.to(roomOwner[currentRoom[socket.id]]).emit('sdp from', { sdp, addr: socket.id });
   });
   socket.on('candidate', candidate => {
     console.log('candidate', socket.id, candidate);
-    socket.to(roomOwner[currentRoom[socket.id]]).emit('candidate from', { candidate, addr: socket.id });
+    io.to(roomOwner[currentRoom[socket.id]]).emit('candidate from', { candidate, addr: socket.id });
   });
 
   socket.on('sdp to', ({ sdp, addr }) => {
