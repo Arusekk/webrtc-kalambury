@@ -45,6 +45,10 @@ window.addEventListener('load', async () => {
     chat_history.appendChild(item)
   });
 
+  signaler.on('clock', beginning_time => {
+    startCountdown(0, beginning_time);
+  });
+
   // we want the creator to connect to us
   await pc.setLocalDescription()
   signaler.emit('join', { name: location.hash.slice(1), sdp: pc.localDescription })

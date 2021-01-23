@@ -48,7 +48,11 @@ io.on('connection', socket => {
 
   socket.on('chat', msg => {
     io.emit('chat', msg);
-    console.log("chat:", msg);
+  });
+
+  socket.on('clock', beginning_time => {
+    io.emit('clock', beginning_time);
+
   });
 
   // WebRTC

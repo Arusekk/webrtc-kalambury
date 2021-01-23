@@ -14,7 +14,7 @@ html(lang='pl')
     header#game_header
       h1 Kalambury
 
-    button(onclick='this.disabled = true; startCountdown(clock, this)') Clock Start
+    button#clock_button(onclick='startCountdown(1, 0)') Clock Start
     span#clock Timer
     input(type='text')#text_input
     input(type='submit' onclick='chat(text_input)')

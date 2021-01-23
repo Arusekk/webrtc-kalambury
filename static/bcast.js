@@ -18,6 +18,10 @@ window.addEventListener('load', () => {
     chat_history.appendChild(item)
   });
 
+  signaler.on('clock', beginning_time => {
+    startCountdown(0, beginning_time);
+  });
+
 
   signaler.on('sdp from', async ({ sdp, addr }) => {
     console.log("wants to connect", addr, sdp)
