@@ -27,13 +27,12 @@ app.get('/view', (req, res) => {
 
 io.on('connection', socket => {
   console.log('client connected: ', socket.id);
+
   socket.on('room', name => {
     console.log('room', socket.id, name);
     currentRoom[socket.id] = name;
     socket.join(name);
-
     roomOwner[name] = socket.id;
-
     socket.on('disconnect', () => delete roomOwner[name]);
   });
 
@@ -47,12 +46,11 @@ io.on('connection', socket => {
   socket.on('disconnect', () => delete currentRoom[socket.id]);
 
   socket.on('chat', msg => {
-    io.emit('chat', msg);
+    io.to(currentRoom[socket.id]).emit('chat', msg);
   });
 
   socket.on('clock', beginning_time => {
-    io.emit('clock', beginning_time);
-
+    io.to(currentRoom[socket.id]).emit('clock', beginning_time);
   });
 
   // WebRTC
