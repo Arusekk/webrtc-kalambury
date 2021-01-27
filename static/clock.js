@@ -20,9 +20,16 @@ function startCountdown(mode, beginning_time) {
     if (timeLeft <= 0) {
       clearInterval(x);
       minutes = seconds = miliseconds = 0;
+      signaler.emit('clock_end');
+      stopCountdown ();
     }
 
     var time = minutes + "::" + seconds + "::" + miliseconds;
     clock.textContent = time;
   }, 1);
+}
+
+function stopCountdown () {
+  clock.textContent = "Timer";
+  clock_button.disabled = false;
 }
