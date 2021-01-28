@@ -11,9 +11,9 @@ function startCountdown(endTime) {
   const x = setInterval(() => {
     const timeLeft = endTime - Date.now();
 
-    const milliseconds = timeLeft % 1000;
+    let milliseconds = timeLeft % 1000;
     let seconds = Math.floor(timeLeft / 1000);
-    const minutes = Math.floor(seconds / 60);
+    let minutes = Math.floor(seconds / 60);
     seconds %= 60;
 
     const progress = timeLeft / duration;
