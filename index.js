@@ -43,8 +43,8 @@ io.on('connection', socket => {
     currentRoom = room[name];
     socket.join(name);
 
-    if (currentRoom.clockTime) {
-      socket.emit('clock', currentRoom.clockTime);
+    if (currentRoom.deadline) {
+      socket.emit('clock', { deadline: currentRoom.deadline, now: Date.now() });
     }
   });
 
@@ -54,12 +54,13 @@ io.on('connection', socket => {
     msg = msg.trim();
     io.to(currentRoom.name).emit('chat', msg);
   });
-  socket.on('clock', clockTime => {
-    socket.to(currentRoom.name).emit('clock', clockTime);
-    currentRoom.clockTime = clockTime;
+  socket.on('clock', ({ deadline, now }) => {
+    deadline += Date.now() - now;
+    currentRoom.deadline = deadline;
+    socket.to(currentRoom.name).emit('clock', { deadline, now: Date.now() });
   });
 
-  socket.on('clock end', () => delete currentRoom.clockTime);
+  socket.on('clock end', () => delete currentRoom.deadline);
 
   // WebRTC
   socket.on('webrtc to', ({ sdp, candidate, addr }) => {
