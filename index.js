@@ -52,7 +52,7 @@ io.on('connection', socket => {
     }
   });
 
-  socket.on('disconnect', () => io.to(room[currentRoom].owner).emit('disconnects', socket.id));
+  socket.on('disconnect', () => io.to(room[currentRoom]?.owner).emit('disconnects', socket.id));
 
   socket.on('chat', msg => io.to(currentRoom).emit('chat', msg));
   socket.on('clock', beginning_time => {
