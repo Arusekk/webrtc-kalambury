@@ -1,6 +1,13 @@
 :root {
   --tool-size: 50px;
   --gradient: linear-gradient(45deg, #b1a6d8, #c8a6d8, #d8a6cc, #d8a6a7, #edab80);
+
+  --circle-size: 120px;
+  --circle-background: #d6dadc;
+  --circle-color: #97a71d;
+  --transition-length: 1s;
+
+  --clock-fill: 0deg;
 }
 
 body {
@@ -59,4 +66,39 @@ input:checked + .colorpreview {
 .sizepick {
   display: flex;
   align-items: center;
+}
+
+.circle {
+  position: relative;
+  width:  var(--circle-size);
+  height: var(--circle-size);
+
+  background-color: var(--circle-background);
+  border-radius: 50%;
+}
+.circle .mask {
+  position: absolute;
+
+  transition: -webkit-transform var(--transition-length) linear;
+  transition: -ms-transform var(--transition-length) linear;
+  transition: transform var(--transition-length) linear;
+  -webkit-backface-visibility: hidden;
+
+  clip: rect(0px, calc(var(--circle-size) / 2), var(--circle-size), 0px);
+  background-color: none;
+}
+.circle .mask .fill {
+  transform: rotate(calc(180deg - var(--clock-fill)/2));
+
+  background-color: var(--circle-color);
+}
+.circle .mask~.mask {
+  transform: rotate(calc(1deg - var(--clock-fill)/2));
+}
+#clock {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  text-align: center;
+  font-weight: bold;
 }

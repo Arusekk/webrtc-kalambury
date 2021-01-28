@@ -1,35 +1,42 @@
-function startCountdown(mode, beginning_time) {
-  if (mode == 1) {
-    beginning_time = new Date().getTime();
-    signaler.emit('clock', beginning_time);
-  }
-  var endTime = beginning_time;
-  endTime += (1000 * 60 * 2);
+const duration = 1000 * 60 * 2;
 
+function startCountdown(endTime) {
+  if (!endTime) {
+    endTime = Date.now() + duration;
+    signaler.emit('clock', endTime);
+  }
 
   clock_button.disabled = true;
-  var x = setInterval(function() {
+  const r = document.querySelector(':root');
+  const x = setInterval(() => {
+    const timeLeft = endTime - Date.now();
 
-    var timeNow = new Date().getTime();
-    var timeLeft = endTime - timeNow;
+    const milliseconds = timeLeft % 1000;
+    let seconds = Math.floor(timeLeft / 1000);
+    const minutes = Math.floor(seconds / 60);
+    seconds %= 60;
 
-    var minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-    var seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-    var miliseconds = Math.floor((timeLeft % 1000))
+    const progress = timeLeft / duration;
 
     if (timeLeft <= 0) {
       clearInterval(x);
-      minutes = seconds = miliseconds = 0;
-      signaler.emit('clock_end');
+      minutes = seconds = milliseconds = 0;
+      signaler.emit('clock end');
       stopCountdown ();
     }
 
-    var time = minutes + "::" + seconds + "::" + miliseconds;
+    r.style.setProperty('--clock-fill', `${Math.floor(360 * progress)}deg`);
+
+    var time = `${minutes}:${seconds.toString().padStart(2,0)}:${milliseconds.toString().padStart(3,0)}`;
     clock.textContent = time;
-  }, 1);
+  }, 47);
 }
 
 function stopCountdown () {
   clock.textContent = "Timer";
   clock_button.disabled = false;
+}
+
+function setupClock() {
+  signaler.on('clock', endTime => startCountdown(endTime))
 }

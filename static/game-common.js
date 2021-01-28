@@ -32,13 +32,8 @@ function getRTCPeerConnection(addr) {
 function setupGameIO() {
   signaler = io()
 
-  signaler.on('chat', msg => {
-    const item = document.createElement('div');
-    item.textContent = msg;
-    chat_history.appendChild(item)
-  });
-
-  signaler.on('clock', beginning_time => startCountdown(0, beginning_time))
+  setupChat()
+  setupClock()
 }
 
 // vim: set et ts=2 sw=2: kate: replace-tabs on; indent-width 2; tab-width 2;

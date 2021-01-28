@@ -15,8 +15,13 @@ html(lang='pl')
     header#game_header
       h1 Kalambury
 
-    button#clock_button(onclick='startCountdown(1, 0)') Clock Start
-    span#clock Timer
+    button#clock_button(onclick='startCountdown()') Clock Start
+    .circle
+      .circle.mask
+        .circle.mask.fill
+      .circle.mask
+        .circle.mask.fill
+      #clock Timer
     input(type='text')#text_input
     input(type='submit' onclick='chat(text_input)')
     div#chat_history()

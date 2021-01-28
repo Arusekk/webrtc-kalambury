@@ -37,8 +37,8 @@ io.on('connection', socket => {
     room[name] = { owner: socket.id };
     socket.on('disconnect', () => delete room[name]);
 
-    if (room[name].is_clock_button_disabled) {
-      io.to(socket.id).emit('clock', clock_beggining_time[name]);
+    if (room[name].clockTime) {
+      io.to(socket.id).emit('clock', room[name].clockTime);
     }
   });
 
@@ -47,21 +47,21 @@ io.on('connection', socket => {
     currentRoom = name;
     socket.join(name);
 
-    if (room[name].clock_beggining_time) {
-      socket.emit('clock', room[name].clock_beggining_time);
+    if (room[name].clockTime) {
+      socket.emit('clock', room[name].clockTime);
     }
   });
 
   socket.on('disconnect', () => room[currentRoom] && io.to(room[currentRoom].owner).emit('disconnects', socket.id));
 
   socket.on('chat', msg => io.to(currentRoom).emit('chat', msg));
-  socket.on('clock', beginning_time => {
-    io.to(currentRoom).emit('clock', beginning_time);
-    room[currentRoom].clock_beggining_time = beginning_time;
+  socket.on('clock', clockTime => {
+    io.to(currentRoom).emit('clock', clockTime);
+    room[currentRoom].clockTime = clockTime;
   });
 
-  socket.on('clock_end', () => {
-    delete room[currentRoom].clock_beggining_time;
+  socket.on('clock end', () => {
+    delete room[currentRoom].clockTime;
   });
 
   // WebRTC
