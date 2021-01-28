@@ -15,7 +15,7 @@ app.use(express.static('./static'));
 const room = {};
 
 app.get('/', (req, res) => {
-  res.render('index', { roomOwner });
+  res.render('index', { room });
 });
 app.get('/draw', (req, res) => {
   res.render('draw');
@@ -42,51 +42,36 @@ io.on('connection', socket => {
     }
   });
 
-  socket.on('join', ({ name, sdp }) => {
-    console.log('join', socket.id, name, sdp);
+  socket.on('join', name => {
+    console.log('join', socket.id, name);
     currentRoom = name;
     socket.join(name);
-    io.to(room[name].owner).emit('sdp from', { sdp, addr: socket.id });
 
-    if (room[name].is_clock_button_disabled) {
+    if (room[name].clock_beggining_time) {
       socket.emit('clock', room[name].clock_beggining_time);
     }
   });
 
-  socket.on('chat', msg => {
-    io.to(currentRoom).emit('chat', msg);
-  });
+  socket.on('disconnect', () => io.to(room[currentRoom].owner).emit('disconnects', socket.id));
 
+  socket.on('chat', msg => io.to(currentRoom).emit('chat', msg));
   socket.on('clock', beginning_time => {
     io.to(currentRoom).emit('clock', beginning_time);
     room[currentRoom].clock_beggining_time = beginning_time;
-    room[currentRoom].is_clock_button_disabled = true;
   });
 
   socket.on('clock_end', () => {
-    room[currentRoom].is_clock_button_disabled = false;
-    room[currentRoom].clock_beggining_time = 0;
+    delete room[currentRoom].clock_beggining_time;
   });
 
   // WebRTC
-  socket.on('sdp', sdp => {
-    console.log('sdp', socket.id, sdp);
-    io.to(room[currentRoom].owner).emit('sdp from', { sdp, addr: socket.id });
+  socket.on('webrtc to', ({ sdp, candidate, addr }) => {
+    console.log('webrtc to', socket.id, sdp, candidate, addr);
+    if (addr)
+      io.to(addr).emit(sdp ? 'sdp' : 'candidate', sdp || candidate);
+    else
+      io.to(room[currentRoom].owner).emit(sdp ? 'sdp from' : 'candidate from', { sdp, candidate, addr: socket.id });
   });
-  socket.on('candidate', candidate => {
-    console.log('candidate', socket.id, candidate);
-    io.to(room[currentRoom].owner).emit('candidate from', { candidate, addr: socket.id });
-  });
-
-  socket.on('sdp to', ({ sdp, addr }) => {
-    console.log('sdp to', socket.id, sdp, addr);
-    io.to(addr).emit('sdp', sdp);
-  });
-  socket.on('candidate to', ({ candidate, addr }) => {
-    console.log('candidate to', socket.id, candidate, addr);
-    io.to(addr).emit('candidate', candidate);
-  });
-
 });
 
 server.listen(process.env.PORT || 8000);

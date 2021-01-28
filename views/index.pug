@@ -8,6 +8,6 @@ html(lang='pl')
     p
       a(href=`/draw#${Math.floor(Math.random() * 1e6)}`) Nowy pokój
     ul
-      each key in Object.keys(roomOwner)
+      each key in Object.keys(room)
         li
           a(href=`/view#${encodeURIComponent(key)}`) Pokój #{key}

@@ -1,46 +1,22 @@
-const activechannels = [],
+const activeChannels = [],
       connections = {}
-let signaler
 
 function broadcast(data) {
-  activechannels.forEach(chan => chan.send(data))
+  activeChannels.forEach(chan => chan.send(data))
 }
 
 window.addEventListener('load', () => {
-  signaler = io()
+  setupGameIO()
 
-  signaler.emit('room', location.hash.slice(1))
   signaler.on('disconnects', addr => delete connections[addr])
 
-  signaler.on('chat', msg => {
-    var item = document.createElement('div');
-    item.textContent = msg;
-    chat_history.appendChild(item)
-  });
-
-  signaler.on('clock', beginning_time => {
-    startCountdown(0, beginning_time);
-  });
-
-
+  signaler.on('candidate from', ({ candidate, addr }) => connections[addr].pc.addIceCandidate(candidate))
   signaler.on('sdp from', async ({ sdp, addr }) => {
     console.log("wants to connect", addr, sdp)
     if (connections[addr])
-      pc = connections[addr]
+      connections[addr].onsdp(sdp)
     else {
-      pc = connections[addr] = new RTCPeerConnection({
-        iceServers: [{ urls: [
-          'stun:stun.stunprotocol.org:3478',
-        ] }],
-      })
-
-      // set up handshake handlers
-      pc.onicecandidate = ({ candidate }) => signaler.emit('candidate to', { candidate, addr })
-      pc.onnegotiationneeded = async () => {
-        console.log("negotiation needed")
-        await pc.setLocalDescription()
-        signaler.emit('sdp to', { sdp: pc.localDescription, addr })
-      }
+      const { pc, onsdp } = connections[addr] = getRTCPeerConnection(addr)
 
       // set up success handling
       pc.ondatachannel = ({ channel }) => {
@@ -49,16 +25,15 @@ window.addEventListener('load', () => {
           type: 'img',
           dataurl: picture.ctx.canvas.toDataURL()
         }))
-        activechannels.push(channel)
+        activeChannels.push(channel)
       }
-    }
 
-    // tell us who they are
-    await pc.setRemoteDescription(sdp)
-    if (pc.signalingState !== 'stable') {
-      // tell them who we are
-      await pc.setLocalDescription()
-      signaler.emit('sdp to', { sdp: pc.localDescription, addr })
+      onsdp(sdp)
     }
   })
+
+  // create the room now that we are ready
+  signaler.emit('room', location.hash.slice(1))
 })
+
+// vim: set et ts=2 sw=2: kate: replace-tabs on; indent-width 2; tab-width 2;
