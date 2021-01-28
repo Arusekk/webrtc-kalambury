@@ -11,7 +11,7 @@
   --circle-size: 120px;
   --circle-background: #d6dadc;
   --circle-color: #97a71d;
-  --transition-length: 1s;
+  --transition-length: 0.3s;
 
   --clock-fill: 0deg;
 }
@@ -31,6 +31,11 @@ body {
 
 h1 {
   margin: 0;
+}
+
+h1 a {
+  color: var(--dark-fg);
+  text-decoration: none;
 }
 
 #gameMain {
