@@ -12,10 +12,7 @@ app.set('view engine', 'pug');
 
 app.use(express.static('./static'));
 
-const roomOwner = {};
-const currentRoom = {};
-var is_clock_button_disabled = {};
-var clock_beggining_time = {};
+const room = {};
 
 app.get('/', (req, res) => {
   res.render('index', { roomOwner });
@@ -31,55 +28,54 @@ app.get('/view', (req, res) => {
 io.on('connection', socket => {
   console.log('client connected: ', socket.id);
 
+  let currentRoom;
+
   socket.on('room', name => {
     console.log('room', socket.id, name);
-    currentRoom[socket.id] = name;
+    currentRoom = name;
     socket.join(name);
-    roomOwner[name] = socket.id;
-    socket.on('disconnect', () => delete roomOwner[name]);
+    room[name] = { owner: socket.id };
+    socket.on('disconnect', () => delete room[name]);
 
-    if (is_clock_button_disabled[name]) {
+    if (room[name].is_clock_button_disabled) {
       io.to(socket.id).emit('clock', clock_beggining_time[name]);
     }
   });
 
   socket.on('join', ({ name, sdp }) => {
     console.log('join', socket.id, name, sdp);
-    currentRoom[socket.id] = name;
+    currentRoom = name;
     socket.join(name);
-    io.to(roomOwner[name]).emit('sdp from', { sdp, addr: socket.id });
+    io.to(room[name].owner).emit('sdp from', { sdp, addr: socket.id });
 
-    if (is_clock_button_disabled[name]) {
-      io.to(socket.id).emit('clock', clock_beggining_time[name]);
+    if (room[name].is_clock_button_disabled) {
+      socket.emit('clock', room[name].clock_beggining_time);
     }
   });
 
-  socket.on('disconnect', () => {
-    delete currentRoom[socket.id];
-  });
-
   socket.on('chat', msg => {
-    io.to(currentRoom[socket.id]).emit('chat', msg);
+    io.to(currentRoom).emit('chat', msg);
   });
 
   socket.on('clock', beginning_time => {
-    io.to(currentRoom[socket.id]).emit('clock', beginning_time);
-    clock_beggining_time[currentRoom[socket.id]] = beginning_time;
-    is_clock_button_disabled[currentRoom[socket.id]] = true;
+    io.to(currentRoom).emit('clock', beginning_time);
+    room[currentRoom].clock_beggining_time = beginning_time;
+    room[currentRoom].is_clock_button_disabled = true;
   });
 
   socket.on('clock_end', () => {
-    is_clock_button_disabled[currentRoom[socket.id]] = false;
-    clock_beggining_time[currentRoom[socket.id]] = 0;
+    room[currentRoom].is_clock_button_disabled = false;
+    room[currentRoom].clock_beggining_time = 0;
   });
+
   // WebRTC
   socket.on('sdp', sdp => {
     console.log('sdp', socket.id, sdp);
-    io.to(roomOwner[currentRoom[socket.id]]).emit('sdp from', { sdp, addr: socket.id });
+    io.to(room[currentRoom].owner).emit('sdp from', { sdp, addr: socket.id });
   });
   socket.on('candidate', candidate => {
     console.log('candidate', socket.id, candidate);
-    io.to(roomOwner[currentRoom[socket.id]]).emit('candidate from', { candidate, addr: socket.id });
+    io.to(room[currentRoom].owner).emit('candidate from', { candidate, addr: socket.id });
   });
 
   socket.on('sdp to', ({ sdp, addr }) => {
