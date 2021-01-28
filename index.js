@@ -28,41 +28,38 @@ app.get('/view', (req, res) => {
 io.on('connection', socket => {
   console.log('client connected: ', socket.id);
 
-  let currentRoom;
+  let currentRoom = {};
 
   socket.on('room', name => {
     console.log('room', socket.id, name);
-    currentRoom = name;
     socket.join(name);
-    room[name] = { owner: socket.id };
+    room[name] = currentRoom = { owner: socket.id, name };
     socket.on('disconnect', () => delete room[name]);
-
-    if (room[name].clockTime) {
-      io.to(socket.id).emit('clock', room[name].clockTime);
-    }
   });
 
   socket.on('join', name => {
     console.log('join', socket.id, name);
-    currentRoom = name;
+    if (!room[name]) return;
+    currentRoom = room[name];
     socket.join(name);
 
-    if (room[name].clockTime) {
-      socket.emit('clock', room[name].clockTime);
+    if (currentRoom.clockTime) {
+      socket.emit('clock', currentRoom.clockTime);
     }
   });
 
-  socket.on('disconnect', () => room[currentRoom] && io.to(room[currentRoom].owner).emit('disconnects', socket.id));
+  socket.on('disconnect', () => io.to(currentRoom.owner).emit('disconnects', socket.id));
 
-  socket.on('chat', msg => io.to(currentRoom).emit('chat', msg));
+  socket.on('chat', msg => {
+    msg = msg.trim();
+    io.to(currentRoom.name).emit('chat', msg);
+  });
   socket.on('clock', clockTime => {
-    io.to(currentRoom).emit('clock', clockTime);
-    room[currentRoom].clockTime = clockTime;
+    socket.to(currentRoom.name).emit('clock', clockTime);
+    currentRoom.clockTime = clockTime;
   });
 
-  socket.on('clock end', () => {
-    delete room[currentRoom].clockTime;
-  });
+  socket.on('clock end', () => delete currentRoom.clockTime);
 
   // WebRTC
   socket.on('webrtc to', ({ sdp, candidate, addr }) => {
@@ -70,8 +67,10 @@ io.on('connection', socket => {
     if (addr)
       io.to(addr).emit(sdp ? 'sdp' : 'candidate', sdp || candidate);
     else
-      io.to(room[currentRoom].owner).emit(sdp ? 'sdp from' : 'candidate from', { sdp, candidate, addr: socket.id });
+      io.to(currentRoom.owner).emit(sdp ? 'sdp from' : 'candidate from', { sdp, candidate, addr: socket.id });
   });
 });
 
 server.listen(process.env.PORT || 8000);
+
+// vim: set et ts=2 sw=2: kate: replace-tabs on; indent-width 2; tab-width 2;
