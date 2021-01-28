@@ -1,6 +1,6 @@
 'use strict';
 class Picture {
-  constructor(canvasId, width = 800, height = 800) {
+  constructor(canvasId, width = 800, height = 700) {
     let canvas = document.createElement('canvas');
     this.ctx = canvas.getContext('2d');
     this.isPointerDown = false;

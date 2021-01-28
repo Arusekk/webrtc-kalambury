@@ -6,7 +6,7 @@ function startCountdown(endTime) {
     signaler.emit('clock', endTime);
   }
 
-  clock_button.disabled = true;
+  clockButton.disabled = true;
   const r = document.querySelector(':root');
   const x = setInterval(() => {
     const timeLeft = endTime - Date.now();
@@ -34,7 +34,7 @@ function startCountdown(endTime) {
 
 function stopCountdown () {
   clock.textContent = "Timer";
-  clock_button.disabled = false;
+  clockButton.disabled = false;
 }
 
 function setupClock() {

@@ -2,8 +2,8 @@
 var picture;
 
 window.addEventListener('load', () => {
-  picture = new Picture('game_canvas');
-  game_main.prepend(picture.ctx.canvas);
+  picture = new Picture('gameCanvas');
+  drawingArea.prepend(picture.ctx.canvas);
 });
 
 function handleViewMessage(msg) {

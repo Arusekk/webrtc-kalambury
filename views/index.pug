@@ -1,13 +1,12 @@
-doctype html
-html(lang='pl')
-  head
-    title Rooms — kalambury
-    link(rel='stylesheet' href='style.css' type='text/css')
-  body
-    h1 Kalambury
-    p
-      a(href=`/draw#${Math.floor(Math.random() * 1e6)}`) Nowy pokój
-    ul
+extends base.pug
+
+block variables
+  - var title = 'Rooms'
+
+block content
+  main#lobbyMain
+    a.newRoom(href=`/draw#${Math.floor(Math.random() * 1e6)}`) Nowy pokój
+    ul.roomList
       each key in Object.keys(room)
         li
           a(href=`/view#${encodeURIComponent(key)}`) Pokój #{key}

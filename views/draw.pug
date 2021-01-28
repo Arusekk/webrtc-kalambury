@@ -8,7 +8,7 @@ block scripts
   script(src='draw.js' type='text/javascript')
 
 block tools
-  #drawtools
+  #colortools
     each color, i in ['#000000', '#282828', '#383838', '#585858', '#b8b8b8', '#d8d8d8', '#e8e8e8', '#f8f8f8', '#ffffff', '#ab4642', '#dc9656', '#f7ca88', '#a1b56c', '#86c1b9', '#7cafc2', '#ba8baf', '#a16946']
       label
         input(
@@ -16,6 +16,7 @@ block tools
           onclick=`picture.setColor('${color}')`
         )
         .colorpreview(style=`background-color: ${color}`)
+  #drawtools
     form.sizepick
       svg.sizepreview(viewBox='0 0 50 50' xmlns='http://www.w3.org/2000/svg')
         circle#sizecircle(cx='25' cy='25' r='2.5')
