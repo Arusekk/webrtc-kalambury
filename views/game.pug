@@ -22,5 +22,6 @@ block content
       block tools
     #chatArea
       #chatHistory
-      input(type='text')#chatInput
-      button(onclick='chat(chatInput)') Wyślij
+      form#chatForm(action='')
+        input(type='text' autocomplete='off')#chatInput
+        button(onclick='chat(chatInput)') Wyślij

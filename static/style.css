@@ -189,6 +189,11 @@ input:checked + .colorpreview {
   padding: 0.5em;
 }
 
+#chatForm {
+  display: flex;
+  flex-direction: column;
+}
+
 #chatInput {
   border: none;
   outline: none;
