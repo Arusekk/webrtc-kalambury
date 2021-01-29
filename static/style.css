@@ -84,7 +84,7 @@ button:disabled {
   font-size: 1.3em;
 }
 
-.roomList {
+.roomList, .playerList {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -206,12 +206,31 @@ input:checked + .tool {
   cursor: pointer;
 }
 
-#chatArea {
+#chatArea, #gameSidebar {
   display: flex;
   flex-direction: column;
   height: var(--canvas-height);
-  width: calc(var(--canvas-width) / 2);
   margin: var(--border-size);
+}
+
+#gameSidebar {
+  width: calc(var(--canvas-width) / 4);
+  overflow: auto;
+  overflow-wrap: break-word;
+}
+
+.playerList > li {
+  padding: 0.5em;
+  font-weight: bold;
+  text-align: center;
+}
+
+.drawingNow {
+  background: var(--gradient);
+}
+
+#chatArea {
+  width: calc(var(--canvas-width) / 2);
 }
 
 #chatHistory {
@@ -244,7 +263,8 @@ input:checked + .tool {
   content: ': ';
 }
 
-#gameCanvas, #chatArea, #lobbyMain, input:checked + .colorpreview {
+#gameCanvas, #chatArea, #lobbyMain, #gameSidebar,
+input:checked + .colorpreview {
   border: var(--border-size) solid;
   border-image: var(--gradient) 1;
 }
