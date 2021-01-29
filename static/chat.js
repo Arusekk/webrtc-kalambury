@@ -4,20 +4,28 @@ function chat(chatInput) {
 }
 
 function addChatMessage(name, msg) {
-  let item = document.createElement('div');
+  const item = document.createElement('div');
   item.className = 'chatMessage';
 
-  let chatName = document.createElement('span');
+  const chatName = document.createElement('span');
   chatName.className = 'chatName';
   chatName.textContent = name;
 
-  let chatText = document.createElement('span');
+  const chatText = document.createElement('span');
   chatText.textContent = msg;
 
   item.appendChild(chatName);
   item.appendChild(chatText);
 
+  const scrollToEnd =
+    chatHistory.scrollHeight - chatHistory.scrollTop ===
+    chatHistory.clientHeight;
+
   chatHistory.appendChild(item);
+
+  if (scrollToEnd) {
+    item.scrollIntoView();
+  }
 }
 
 function setupChat() {
