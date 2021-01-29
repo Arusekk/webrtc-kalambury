@@ -14,7 +14,11 @@ window.addEventListener('load', async () => {
   chan.onopen = () => console.log('Connection successful!', chan)
   chan.onmessage = ({ data }) => {
     console.log('Got msg!', data.slice(0, 256))
-    handleViewMessage(JSON.parse(data))
+    try {
+      handleViewMessage(JSON.parse(data))
+    } catch (err) {
+      console.log('Failed to parse msg.');
+    }
   }
 
   // we want the creator to connect to us now that we are ready
