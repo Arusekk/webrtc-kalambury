@@ -8,6 +8,12 @@ block head
   script(src='game-common.js' type='text/javascript')
   block scripts
 
+block header
+  div
+    #nickname(
+      onclick='setNickname(prompt("Nowa nazwa:").trim() || nickname.textContent)'
+    )
+
 block content
   main#gameMain
     #drawingArea

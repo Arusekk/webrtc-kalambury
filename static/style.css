@@ -24,6 +24,9 @@ body {
 }
 
 #gameHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin: 0;
   padding: 0.1em 2em;
   background: var(--gradient);
@@ -195,6 +198,12 @@ input:checked + .tool {
   transform: translate(-50%, -50%);
   text-align: center;
   font-weight: bold;
+}
+
+#nickname {
+  font-size: 1.1em;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 #chatArea {

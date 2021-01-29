@@ -79,10 +79,13 @@ io.on('connection', socket => {
       io.to(currentRoom.owner).emit('disconnects', socket.id)
   });
 
-  socket.on('chat', (sender, msg) => {
+  socket.on('set_nick', name => socket.nickname = name);
+
+  socket.on('chat', msg => {
     msg = msg.trim();
-    io.to(currentRoom.name).emit('chat', sender, msg);
+    io.to(currentRoom.name).emit('chat', socket.nickname, msg);
   });
+
   socket.on('clock', ({ deadline, now }) => {
     deadline += Date.now() - now;
     currentRoom.deadline = deadline;
