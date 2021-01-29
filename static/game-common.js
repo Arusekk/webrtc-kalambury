@@ -29,11 +29,19 @@ function getRTCPeerConnection(addr) {
   return { pc, onsdp }
 }
 
+function setLocation(newLoc) {
+  console.log('want new location', newLoc)
+  location = newLoc  // TODO: maybe history.pushState
+}
+
 function setupGameIO() {
   signaler = io()
 
   setupChat()
   setupClock()
+  signaler.on('new round', isNewOwner => {
+    setLocation(`${isNewOwner ? 'draw' : 'view'}${location.hash}`)
+  })
 }
 
 // vim: set et ts=2 sw=2: kate: replace-tabs on; indent-width 2; tab-width 2;

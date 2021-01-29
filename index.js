@@ -25,30 +25,59 @@ app.get('/view', (req, res) => {
 });
 
 
+function randomChoice(...arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
 io.on('connection', socket => {
   console.log('client connected: ', socket.id);
 
   let currentRoom = {};
 
-  socket.on('room', name => {
-    console.log('room', socket.id, name);
+  socket.on('room', ({ name, mode }) => {
+    console.log('room', socket.id, name, mode);
     socket.join(name);
-    room[name] = currentRoom = { owner: socket.id, name };
-    socket.on('disconnect', () => delete room[name]);
-  });
 
-  socket.on('join', name => {
-    console.log('join', socket.id, name);
-    if (!room[name]) return;
-    currentRoom = room[name];
-    socket.join(name);
+    if (mode === 'draw') {
+      if (room[name]) {
+        socket.to(name).emit('new round', false);
+        delete room[name].name;
+      }
+
+      room[name] = currentRoom = { owner: socket.id, name };
+    } else if (room[name]) {
+      currentRoom = room[name];
+    } else {
+      room[name] = currentRoom;
+    }
 
     if (currentRoom.deadline) {
       socket.emit('clock', { deadline: currentRoom.deadline, now: Date.now() });
     }
   });
 
-  socket.on('disconnect', () => io.to(currentRoom.owner).emit('disconnects', socket.id));
+  function newRound() {
+    if (!currentRoom.newRoundTimeout) {
+      currentRoom.newRoundTimeout = setTimeout(() => {
+        const newOwnerCandidates = new Set(io.sockets.adapter.rooms.get(currentRoom.name))
+        newOwnerCandidates.delete(currentRoom.owner);
+        if (!newOwnerCandidates.size) {
+          delete room[currentRoom.name];
+          return;
+        }
+
+        newOwner = randomChoice(...newOwnerCandidates);
+        io.to(newOwner).emit('new round', true);
+      }, 1000);
+    }
+  }
+
+  socket.on('disconnect', () => {
+    if (currentRoom.owner == socket.id)
+      newRound();
+    else
+      io.to(currentRoom.owner).emit('disconnects', socket.id)
+  });
 
   socket.on('chat', msg => {
     msg = msg.trim();
@@ -60,7 +89,10 @@ io.on('connection', socket => {
     socket.to(currentRoom.name).emit('clock', { deadline, now: Date.now() });
   });
 
-  socket.on('clock end', () => delete currentRoom.deadline);
+  socket.on('clock end', () => {
+    delete currentRoom.deadline;
+    newRound();
+  });
 
   // WebRTC
   socket.on('webrtc to', ({ sdp, candidate, addr }) => {

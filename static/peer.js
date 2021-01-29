@@ -1,7 +1,7 @@
 window.addEventListener('load', async () => {
   setupGameIO()
 
-  signaler.emit('join', location.hash.slice(1))
+  signaler.emit('room', { name: location.hash.slice(1), mode: 'view' })
 
   // set up WebRTC handlers
   signaler.on('candidate', async candidate => await pc.addIceCandidate(candidate))
