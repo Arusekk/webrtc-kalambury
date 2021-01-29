@@ -28,12 +28,19 @@ function addChatMessage(name, msg) {
   }
 }
 
-function setNickname(name) {
-  nickname.textContent = name;
-  signaler.emit('set_nick', name);
+function setNickname(name, mode) {
+  var username = sessionStorage.getItem('username');
+  if (username == null || mode == 1) {
+    nickname.textContent = name;
+    sessionStorage.setItem('username', name);
+    signaler.emit('set_nick', name);
+  } else {
+    nickname.textContent = username;
+    signaler.emit('set_nick', username);
+  }
 }
 
 function setupChat() {
-  setNickname(`Gracz${Math.floor(Math.random() * 1e4)}`);
+  setNickname(`Gracz${Math.floor(Math.random() * 1e4)}`, 0);
   signaler.on('chat', (sender, msg) => addChatMessage(sender, msg));
 }
