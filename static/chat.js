@@ -1,5 +1,7 @@
+var username = prompt("What is your name?");
+
 function chat(chatInput) {
-  signaler.emit('chat', chatInput.value);
+  signaler.emit('chat', username, chatInput.value);
   chatInput.value = '';
 }
 
@@ -29,5 +31,5 @@ function addChatMessage(name, msg) {
 }
 
 function setupChat() {
-  signaler.on('chat', msg => addChatMessage('placeholder', msg));
+  signaler.on('chat', (sender, msg) => addChatMessage(sender, msg));
 }
