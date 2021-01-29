@@ -103,7 +103,7 @@ button:hover:enabled, button:focus:enabled, button:active:enabled,
   padding: 0.1em calc(2 * var(--border-size));
 }
 
-input[name='colorpick'] {
+input[name='colorpick'], input[name='eraserButton'] {
   display: none;
 }
 
@@ -126,6 +126,15 @@ input:checked + .colorpreview {
 .sizepick {
   display: flex;
   align-items: center;
+}
+
+.tool {
+  max-height: var(--tool-size);
+  max-width: var(--tool-size);
+}
+
+input:checked + .tool {
+  background: var(--accent-bg);
 }
 
 .circle {

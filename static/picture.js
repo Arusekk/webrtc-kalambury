@@ -27,4 +27,14 @@ class Picture {
   setSize(size) {
     this.ctx.lineWidth = size;
   }
+
+  setErase(state) {
+    this.ctx.globalCompositeOperation = state
+      ? 'destination-out'
+      : 'source-over';
+  }
+
+  isErasing() {
+    return this.ctx.globalCompositeOperation == 'destination-out';
+  }
 }

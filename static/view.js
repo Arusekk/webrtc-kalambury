@@ -11,6 +11,7 @@ function handleViewMessage(msg) {
     case 'line':
       picture.setColor(msg.color);
       picture.setSize(msg.size);
+      picture.setErase(msg.erase);
       picture.draw(...msg.line);
       break;
     case 'img':

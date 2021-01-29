@@ -9,7 +9,7 @@ block scripts
 
 block tools
   #colortools
-    each color, i in ['#000000', '#282828', '#383838', '#585858', '#b8b8b8', '#d8d8d8', '#e8e8e8', '#f8f8f8', '#ffffff', '#ab4642', '#dc9656', '#f7ca88', '#a1b56c', '#86c1b9', '#7cafc2', '#ba8baf', '#a16946']
+    each color, i in ['#000000', '#282828', '#383838', '#585858', '#b8b8b8', '#d8d8d8', '#e8e8e8', '#f8f8f8', '#ab4642', '#dc9656', '#f7ca88', '#a1b56c', '#86c1b9', '#7cafc2', '#ba8baf', '#a16946']
       label
         input(
           type='radio' name='colorpick' checked=i===0
@@ -26,3 +26,10 @@ block tools
         oninput='sizecircle.setAttribute("r", sizepick.value/2); \
           picture.setSize(this.value)'
       )
+      label
+        input(
+          type='checkbox'
+          name='eraserButton'
+          onclick='picture.setErase(this.checked)'
+        )
+        img.tool(src='eraser.svg')

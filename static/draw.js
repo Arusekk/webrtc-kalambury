@@ -41,7 +41,8 @@ function makeDrawable(picture) {
       type: 'line',
       line,
       color: picture.ctx.strokeStyle,
-      size: picture.ctx.lineWidth
+      size: picture.ctx.lineWidth,
+      erase: picture.isErasing()
     }));
   }
 }
