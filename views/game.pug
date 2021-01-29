@@ -10,17 +10,17 @@ block head
 
 block content
   main#gameMain
-    div
-      button#clockButton(onclick='startCountdown()') Rozpocznij
-      .circle
-        .circle.mask
-          .circle.mask.fill
-        .circle.mask
-          .circle.mask.fill
-        #clock Timer
     #drawingArea
+      div#clockDisplay
+        .circle
+          .circle.mask
+            .circle.mask.fill
+          .circle.mask
+            .circle.mask.fill
+          #clock Timer
       block tools
     #chatArea
+      button#clockButton(onclick='startCountdown()') Rozpocznij
       #chatHistory
       form#chatForm(action='' onsubmit='chat(chatInput); return false')
         input#chatInput(type='text' autocomplete='off')

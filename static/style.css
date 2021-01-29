@@ -8,7 +8,7 @@
   --accent-bg: #e2cbdd;
   --dark-fg: #3f3838;
 
-  --circle-size: 120px;
+  --circle-size: 80px;
   --circle-background: #d6dadc;
   --circle-color: #97a71d;
   --transition-length: 0.3s;
@@ -66,6 +66,11 @@ button:hover:enabled, button:focus:enabled, button:active:enabled,
   filter: brightness(1.1);
 }
 
+button:disabled {
+  background: lightgray;
+  color: gray;
+}
+
 .newRoom, .roomList > li > a {
   display: block;
   box-sizing: border-box;
@@ -91,6 +96,10 @@ button:hover:enabled, button:focus:enabled, button:active:enabled,
 
 .roomList > li > a:hover {
   background: var(--gradient);
+}
+
+#drawingArea {
+  position: relative;
 }
 
 #gameCanvas {
@@ -168,6 +177,12 @@ input:checked + .tool {
   transform: rotate(calc(1deg - var(--clock-fill)/2));
 }
 
+#clockDisplay {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
 #clockButton {
   display: block;
 }
@@ -175,7 +190,9 @@ input:checked + .tool {
 #clock {
   position: absolute;
   top: 50%;
+  left: 50%;
   width: 100%;
+  transform: translate(-50%, -50%);
   text-align: center;
   font-weight: bold;
 }

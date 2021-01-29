@@ -11,7 +11,6 @@ function startCountdown(deadline) {
   const x = setInterval(() => {
     const timeLeft = deadline - Date.now();
 
-    let milliseconds = timeLeft % 1000;
     let seconds = Math.floor(timeLeft / 1000);
     let minutes = Math.floor(seconds / 60);
     seconds %= 60;
@@ -20,11 +19,11 @@ function startCountdown(deadline) {
 
     if (timeLeft <= 0) {
       clearInterval(x);
-      progress = minutes = seconds = milliseconds = 0;
+      progress = minutes = seconds = 0;
       signaler.emit('clock end');
       stopCountdown();
     } else {
-      const time = `${minutes}:${seconds.toString().padStart(2,0)}:${milliseconds.toString().padStart(3,0)}`;
+      const time = `${minutes}:${seconds.toString().padStart(2,0)}`;
       clock.textContent = time;
     }
 
