@@ -11,6 +11,8 @@ function addChatMessage(name, msg, isDrawing) {
     const acceptButton = document.createElement('button');
     acceptButton.textContent = '✓';
     acceptButton.onclick = () => signaler.emit('accept', { name, msg });
+
+    item.appendChild(acceptButton);
   }
 
   const chatName = document.createElement('span');
