@@ -12,7 +12,7 @@ app.set('view engine', 'pug');
 
 app.use(express.static('./static'));
 
-const room = {};
+const room = new Map();
 
 app.get('/', (req, res) => {
   res.render('index', { room });
@@ -39,16 +39,16 @@ io.on('connection', socket => {
     socket.join(name);
 
     if (mode === 'draw') {
-      if (room[name]) {
+      if (room.has(name)) {
         socket.to(name).emit('new round', false);
-        room[name] = currentRoom = { owner: socket.id, name, player: room[name].player };
+        room.set(name, currentRoom = { owner: socket.id, name, player: room.get(name).player });
       } else {
-        room[name] = currentRoom = { owner: socket.id, name, player: new Map() };
+        room.set(name, currentRoom = { owner: socket.id, name, player: new Map() });
       }
-    } else if (room[name]) {
-      currentRoom = room[name];
+    } else if (room.has(name)) {
+      currentRoom = room.get(name);
     } else {
-      room[name] = currentRoom;
+      room.set(name, currentRoom);
     }
 
     if (currentRoom.deadline) {
@@ -62,7 +62,7 @@ io.on('connection', socket => {
         const newOwnerCandidates = new Set(io.sockets.adapter.rooms.get(currentRoom.name))
         newOwnerCandidates.delete(currentRoom.owner);
         if (!newOwnerCandidates.size) {
-          delete room[currentRoom.name];
+          room.delete(currentRoom.name);
           return;
         }
 
