@@ -32,7 +32,7 @@ function getRTCPeerConnection(addr) {
 function setLocation(newLoc) {
   if (location.pathname.slice(1) + location.hash === newLoc) {
     console.log('need reload')
-    location.reload(true)
+    location.reload()
   }
   else {
     console.log('want new location', newLoc)
