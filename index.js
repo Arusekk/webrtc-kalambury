@@ -117,7 +117,6 @@ io.on('connection', socket => {
 
   socket.on('nextRound', () => {
     delete currentRoom.deadline;
-    currentRoom.score_changed = false;
     newRound();
   });
 
@@ -127,7 +126,7 @@ io.on('connection', socket => {
       if (!currentRoom.score_changed) {
         currentRoom.score_changed = true;
         currentRoom.player.get(name).score++;
-        io.to(currentRoom.name).emit(name + '👑');
+        io.to(currentRoom.name).emit('chat', name + '👑', '');
         newRound();
       }
     }
