@@ -85,12 +85,14 @@ io.on('connection', socket => {
 
       currentRoom.player.set(name, currentRoom.player.get(socket.nickname));
       currentRoom.player.delete(socket.nickname);
-    } else if (!currentRoom.player.has(name)) {
+    } else if (typeof currentRoom.player != "undefined" && !currentRoom.player.has(name)) {
       currentRoom.player.set(name, { score: 0 });
     }
 
     socket.nickname = name;
-    io.to(currentRoom.name).emit('players', Array.from(currentRoom.player));
+    if (typeof currentRoom.player != "undefined") {
+      io.to(currentRoom.name).emit('players', Array.from(currentRoom.player));
+    }
   });
 
   socket.on('chat', msg => {
