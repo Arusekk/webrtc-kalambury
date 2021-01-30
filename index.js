@@ -39,7 +39,7 @@ io.on('connection', socket => {
     socket.join(name);
 
     if (mode === 'draw') {
-      currentRoom = { owner: socket.id, name, player: new Map() };
+      currentRoom = { owner: socket.id, name, player: new Map(), score_changed: false };
       const oldRoom = room.get(name);
       if (oldRoom !== undefined) {
         delete oldRoom.name;
@@ -119,15 +119,21 @@ io.on('connection', socket => {
 
   socket.on('nextRound', () => {
     delete currentRoom.deadline;
+    currentRoom.score_changed = false;
     newRound();
   });
 
   socket.on('add_point', name => {
-    gamer_score = currentRoom.player.get(name);
-    score = gamer_score.score;
-    score++;
-    currentRoom.player.set(name, {score: score});
-    console.log(score);
+    console.log(name, currentRoom.owner)
+    if (socket.id == currentRoom.owner) {
+      if (!currentRoom.score_changed) {
+        currentRoom.score_changed = true;
+        gamer_score = currentRoom.player.get(name);
+        score = gamer_score.score;
+        score++;
+        currentRoom.player.set(name, {score: score});
+      }
+    }
   });
 
   // WebRTC
