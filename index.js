@@ -126,7 +126,7 @@ io.on('connection', socket => {
       if (!currentRoom.score_changed) {
         currentRoom.score_changed = true;
         currentRoom.player.get(name).score++;
-        io.to(currentRoom.name).emit('chat', name + '👑', '');
+        io.to(currentRoom.name).emit('chat', name, '(win)');
         newRound();
       }
     }
