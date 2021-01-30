@@ -78,8 +78,10 @@ io.on('connection', socket => {
   socket.on('disconnect', () => {
     if (currentRoom.owner === socket.id)
       newRound();
-    else
+    else {
       io.to(currentRoom.owner).emit('disconnects', socket.id)
+      io.to(currentRoom.name).emit('players', Array.from(currentRoom.player));
+    }
   });
 
   socket.on('set nick', name => {
@@ -119,15 +121,14 @@ io.on('connection', socket => {
     newRound();
   });
 
-  socket.on('add_point', name => {
+  socket.on('add point', name => {
     console.log(name, currentRoom.owner)
     if (socket.id == currentRoom.owner) {
       if (!currentRoom.score_changed) {
         currentRoom.score_changed = true;
-        gamer_score = currentRoom.player.get(name);
-        score = gamer_score.score;
-        score++;
-        currentRoom.player.set(name, {score: score});
+        currentRoom.player.get(name).score++;
+        io.to(currentRoom.name).emit(name + '👑');
+        newRound();
       }
     }
   });

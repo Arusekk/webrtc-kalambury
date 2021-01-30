@@ -10,7 +10,7 @@ function addChatMessage(name, msg, isDrawing) {
   if (isDrawing) {
     const acceptButton = document.createElement('button');
     acceptButton.textContent = '✓';
-    acceptButton.onclick = () => signaler.emit('accept', { name, msg });
+    acceptButton.onclick = () => signaler.emit('add point', name);
 
     item.appendChild(acceptButton);
   }

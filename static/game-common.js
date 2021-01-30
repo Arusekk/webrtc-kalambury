@@ -40,10 +40,10 @@ function setLocation(newLoc) {
   }
 }
 
-function setupGameIO() {
+function setupGameIO(isDrawing) {
   signaler = io()
 
-  setupChat()
+  setupChat(isDrawing)
   setupClock()
   setupPlayerList()
   signaler.on('new round', isNewOwner => {
