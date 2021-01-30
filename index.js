@@ -39,12 +39,14 @@ io.on('connection', socket => {
     socket.join(name);
 
     if (mode === 'draw') {
-      if (room.has(name)) {
+      currentRoom = { owner: socket.id, name, player: new Map() };
+      if (const oldRoom = room.get(name)) {
+        delete oldRoom.name;
+
+        currentRoom.player = oldRoom.player;
         socket.to(name).emit('new round', false);
-        room.set(name, currentRoom = { owner: socket.id, name, player: room.get(name).player });
-      } else {
-        room.set(name, currentRoom = { owner: socket.id, name, player: new Map() });
       }
+      room.set(name, currentRoom);
     } else if (room.has(name)) {
       currentRoom = room.get(name);
     } else {
@@ -59,7 +61,7 @@ io.on('connection', socket => {
   function newRound() {
     if (!currentRoom.newRoundTimeout) {
       currentRoom.newRoundTimeout = setTimeout(() => {
-        const newOwnerCandidates = new Set(io.sockets.adapter.rooms.get(currentRoom.name))
+        const newOwnerCandidates = new Set(io.sockets.adapter.rooms.get(currentRoom.name));
         newOwnerCandidates.delete(currentRoom.owner);
         if (!newOwnerCandidates.size) {
           room.delete(currentRoom.name);
@@ -73,7 +75,7 @@ io.on('connection', socket => {
   }
 
   socket.on('disconnect', () => {
-    if (currentRoom.owner == socket.id)
+    if (currentRoom.owner === socket.id)
       newRound();
     else
       io.to(currentRoom.owner).emit('disconnects', socket.id)
@@ -97,6 +99,10 @@ io.on('connection', socket => {
 
   socket.on('chat', msg => {
     msg = msg.trim();
+    if (msg === currentRoom.headword) {
+      currentRoom.player.get(socket.nickname).guessed = true;
+      msg = '(...)';
+    }
     io.to(currentRoom.name).emit('chat', socket.nickname, msg);
   });
 
