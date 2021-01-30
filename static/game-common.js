@@ -30,8 +30,14 @@ function getRTCPeerConnection(addr) {
 }
 
 function setLocation(newLoc) {
-  console.log('want new location', newLoc)
-  location = newLoc  // TODO: maybe history.pushState
+  if (location.pathname.slice(1) + location.hash === newLoc) {
+    console.log('need reload')
+    location.reload(true)
+  }
+  else {
+    console.log('want new location', newLoc)
+    location.href = newLoc  // TODO: maybe history.pushState
+  }
 }
 
 function setupGameIO() {
