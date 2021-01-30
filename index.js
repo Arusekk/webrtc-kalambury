@@ -82,7 +82,7 @@ io.on('connection', socket => {
       io.to(currentRoom.owner).emit('disconnects', socket.id)
   });
 
-  socket.on('set_nick', name => {
+  socket.on('set nick', name => {
     if ('nickname' in socket) {
       if (socket.nickname === name) return;
 
@@ -100,10 +100,6 @@ io.on('connection', socket => {
 
   socket.on('chat', msg => {
     msg = msg.trim();
-    if (msg === currentRoom.headword) {
-      currentRoom.player.get(socket.nickname).guessed = true;
-      msg = '(...)';
-    }
     io.to(currentRoom.name).emit('chat', socket.nickname, msg);
   });
 

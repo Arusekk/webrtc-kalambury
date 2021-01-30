@@ -6,7 +6,7 @@ function broadcast(data) {
 }
 
 window.addEventListener('load', () => {
-  setupGameIO()
+  setupGameIO(true)
 
   signaler.on('disconnects', addr => delete connections[addr])
 

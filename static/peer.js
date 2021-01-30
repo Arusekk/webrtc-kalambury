@@ -1,5 +1,5 @@
 window.addEventListener('load', async () => {
-  setupGameIO()
+  setupGameIO(true)
 
   signaler.emit('room', { name: location.hash.slice(1), mode: 'view' })
 

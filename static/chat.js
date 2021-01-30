@@ -3,9 +3,15 @@ function chat(chatInput) {
   chatInput.value = '';
 }
 
-function addChatMessage(name, msg) {
+function addChatMessage(name, msg, isDrawing) {
   const item = document.createElement('div');
   item.className = 'chatMessage';
+
+  if (isDrawing) {
+    const acceptButton = document.createElement('button');
+    acceptButton.textContent = '✓';
+    acceptButton.onclick = () => signaler.emit('accept', { name, msg });
+  }
 
   const chatName = document.createElement('span');
   chatName.className = 'chatName';
@@ -28,6 +34,6 @@ function addChatMessage(name, msg) {
   }
 }
 
-function setupChat() {
-  signaler.on('chat', (sender, msg) => addChatMessage(sender, msg));
+function setupChat(isDrawing) {
+  signaler.on('chat', (sender, msg) => addChatMessage(sender, msg, isDrawing));
 }

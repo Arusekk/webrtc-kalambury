@@ -54,7 +54,7 @@ function setupGameIO() {
 function setNickname(name) {
   nickname.textContent = name;
   sessionStorage.setItem('nickname', name);
-  signaler.emit('set_nick', name);
+  signaler.emit('set nick', name);
 }
 
 // TODO: consider sending an initial nickname along with `room` instead
