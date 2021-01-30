@@ -40,7 +40,8 @@ io.on('connection', socket => {
 
     if (mode === 'draw') {
       currentRoom = { owner: socket.id, name, player: new Map() };
-      if (oldRoom = room.get(name)) {
+      const oldRoom = room.get(name);
+      if (oldRoom !== undefined) {
         delete oldRoom.name;
 
         currentRoom.player = oldRoom.player;
