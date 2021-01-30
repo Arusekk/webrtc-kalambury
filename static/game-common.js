@@ -64,4 +64,8 @@ function postRoomJoin() {
   setNickname(nickname);
 }
 
+
+function nextRound() {
+  signaler.emit('nextRound');
+}
 // vim: set et ts=2 sw=2: kate: replace-tabs on; indent-width 2; tab-width 2;
