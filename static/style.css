@@ -84,7 +84,7 @@ button:disabled {
   font-size: 1.3em;
 }
 
-.roomList, .playerList {
+.roomList, #playerList {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -219,7 +219,7 @@ input:checked + .tool {
   overflow-wrap: break-word;
 }
 
-.playerList > li {
+#playerList > li {
   padding: 0.5em;
   font-weight: bold;
   text-align: center;

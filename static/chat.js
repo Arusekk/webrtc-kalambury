@@ -28,15 +28,6 @@ function addChatMessage(name, msg) {
   }
 }
 
-function setNickname(name) {
-  nickname.textContent = name;
-  sessionStorage.setItem('nickname', name);
-  signaler.emit('set_nick', name);
-}
-
 function setupChat() {
-  const nickname = sessionStorage.getItem('nickname') ||
-    `Gracz${Math.floor(Math.random() * 1e4)}`;
-  setNickname(nickname);
   signaler.on('chat', (sender, msg) => addChatMessage(sender, msg));
 }

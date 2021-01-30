@@ -3,6 +3,8 @@ window.addEventListener('load', async () => {
 
   signaler.emit('room', { name: location.hash.slice(1), mode: 'view' })
 
+  postRoomJoin();
+
   // set up WebRTC handlers
   signaler.on('candidate', async candidate => await pc.addIceCandidate(candidate))
   const { pc, onsdp } = getRTCPeerConnection()

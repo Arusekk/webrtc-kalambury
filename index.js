@@ -41,10 +41,10 @@ io.on('connection', socket => {
     if (mode === 'draw') {
       if (room[name]) {
         socket.to(name).emit('new round', false);
-        delete room[name].name;
+        room[name] = currentRoom = { owner: socket.id, name, player: room[name].player };
+      } else {
+        room[name] = currentRoom = { owner: socket.id, name, player: new Map() };
       }
-
-      room[name] = currentRoom = { owner: socket.id, name };
     } else if (room[name]) {
       currentRoom = room[name];
     } else {
@@ -79,7 +79,19 @@ io.on('connection', socket => {
       io.to(currentRoom.owner).emit('disconnects', socket.id)
   });
 
-  socket.on('set_nick', name => socket.nickname = name);
+  socket.on('set_nick', name => {
+    if ('nickname' in socket) {
+      if (socket.nickname === name) return;
+
+      currentRoom.player.set(name, currentRoom.player.get(socket.nickname));
+      currentRoom.player.delete(socket.nickname);
+    } else if (!currentRoom.player.has(name)) {
+      currentRoom.player.set(name, { score: 0 });
+    }
+
+    socket.nickname = name;
+    io.to(currentRoom.name).emit('players', Array.from(currentRoom.player));
+  });
 
   socket.on('chat', msg => {
     msg = msg.trim();

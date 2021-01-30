@@ -39,9 +39,23 @@ function setupGameIO() {
 
   setupChat()
   setupClock()
+  setupPlayerList()
   signaler.on('new round', isNewOwner => {
     setLocation(`${isNewOwner ? 'draw' : 'view'}${location.hash}`)
   })
+}
+
+function setNickname(name) {
+  nickname.textContent = name;
+  sessionStorage.setItem('nickname', name);
+  signaler.emit('set_nick', name);
+}
+
+// TODO: consider sending an initial nickname along with `room` instead
+function postRoomJoin() {
+  const nickname = sessionStorage.getItem('nickname') ||
+    `Gracz${Math.floor(Math.random() * 1e4)}`;
+  setNickname(nickname);
 }
 
 // vim: set et ts=2 sw=2: kate: replace-tabs on; indent-width 2; tab-width 2;

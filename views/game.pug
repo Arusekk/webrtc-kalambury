@@ -5,6 +5,7 @@ block head
   script(src='picture.js' type='text/javascript')
   script(src='clock.js' type='text/javascript')
   script(src='chat.js' type='text/javascript')
+  script(src='player-list.js' type='text/javascript')
   script(src='game-common.js' type='text/javascript')
   block scripts
 
@@ -17,9 +18,7 @@ block header
 block content
   main#gameMain
     #gameSidebar
-      ul.playerList
-        li placeholder1
-        li.drawingNow placeholder2
+      ul#playerList
     #drawingArea
       div#clockDisplay
         .circle
