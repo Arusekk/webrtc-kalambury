@@ -80,8 +80,10 @@ io.on('connection', socket => {
       newRound();
     else {
       io.to(currentRoom.owner).emit('disconnects', socket.id)
-      if (currentRoom.name && currentRoom.player)
+      if (currentRoom.name && currentRoom.player) {
+        currentRoom.player.delete(socket.nickname);
         io.to(currentRoom.name).emit('players', Array.from(currentRoom.player));
+      }
     }
   });
 
