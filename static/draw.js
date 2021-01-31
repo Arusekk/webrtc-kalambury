@@ -5,6 +5,10 @@ window.addEventListener('load', () => {
   picture = new Picture('gameCanvas');
   drawingArea.prepend(picture.ctx.canvas);
   makeDrawable(picture);
+  clearButton.addEventListener('click', _ => {
+    picture.clear();
+    broadcast(JSON.stringify({type: 'clear'}));
+  });
 });
 
 function makeDrawable(picture) {

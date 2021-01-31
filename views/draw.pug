@@ -26,10 +26,12 @@ block tools
         oninput='sizecircle.setAttribute("r", sizepick.value/2); \
           picture.setSize(this.value)'
       )
-      label
-        input(
-          type='checkbox'
-          name='eraserButton'
-          onclick='picture.setErase(this.checked)'
-        )
-        img.tool(src='eraser.svg')
+    label
+      input(
+        type='checkbox'
+        name='eraserButton'
+        onclick='picture.setErase(this.checked)'
+      )
+      img.tool(src='eraser.svg')
+    button#clearButton.toolButton
+      img.tool(src='clear.svg')

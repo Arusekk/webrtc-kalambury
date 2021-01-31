@@ -140,6 +140,15 @@ input:checked + .colorpreview {
   align-items: center;
 }
 
+.toolButton {
+  background: none;
+  padding: 0;
+}
+
+.tool:hover, .tool:focus, .tool:active {
+  filter: brightness(1.2) saturate(1.2);
+}
+
 .tool {
   max-height: var(--tool-size);
   max-width: var(--tool-size);

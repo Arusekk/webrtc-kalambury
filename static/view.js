@@ -14,6 +14,8 @@ function handleViewMessage(msg) {
       picture.setErase(msg.erase);
       picture.draw(...msg.line);
       break;
+    case 'clear':
+      picture.clear();
     case 'img':
       const img = new Image();
       img.onload = () => picture.ctx.drawImage(img, 0, 0);
