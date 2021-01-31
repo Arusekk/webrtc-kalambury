@@ -6,6 +6,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socket(server);
 
+const dictionary = ["pies", "kapibara", "nurek", "ciasto", "inne przykładowe słowa"];
 
 app.set('views', './views');
 app.set('view engine', 'pug');
@@ -113,8 +114,12 @@ io.on('connection', socket => {
   socket.on('clock', ({ deadline, now }) => {
     deadline += Date.now() - now;
     currentRoom.deadline = deadline;
+    randomNumber = Math.floor(Math.random() * (dictionary.length));
+    io.to(currentRoom.owner).emit('randomWord', dictionary[randomNumber]);
     socket.to(currentRoom.name).emit('clock', { deadline, now: Date.now() });
   });
+
+
 
   socket.on('clock end', () => {
     delete currentRoom.deadline;

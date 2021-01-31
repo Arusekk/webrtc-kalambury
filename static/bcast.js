@@ -7,7 +7,7 @@ function broadcast(data) {
 
 window.addEventListener('load', () => {
   setupGameIO(true)
-
+  randomWord();
   signaler.on('disconnects', addr => delete connections[addr])
 
   signaler.on('candidate from', ({ candidate, addr }) => connections[addr].pc.addIceCandidate(candidate))

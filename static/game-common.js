@@ -41,11 +41,12 @@ function setLocation(newLoc) {
 }
 
 function setupGameIO(isDrawing) {
-  signaler = io()
+  signaler = io();
 
-  setupChat(isDrawing)
-  setupClock()
-  setupPlayerList()
+  setupChat(isDrawing);
+  setupClock();
+  setupPlayerList();
+
   signaler.on('new round', isNewOwner => {
     setLocation(`${isNewOwner ? 'draw' : 'view'}${location.hash}`)
   })
@@ -68,4 +69,6 @@ function postRoomJoin() {
 function nextRound() {
   signaler.emit('nextRound');
 }
+
+
 // vim: set et ts=2 sw=2: kate: replace-tabs on; indent-width 2; tab-width 2;

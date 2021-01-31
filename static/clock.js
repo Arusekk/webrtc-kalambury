@@ -1,4 +1,4 @@
-const duration = 1000 * 60 * 2;
+const duration = 1000 * 60 * 3;
 
 function startCountdown(deadline) {
   if (!deadline) {
