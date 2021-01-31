@@ -76,14 +76,16 @@ io.on('connection', socket => {
   }
 
   socket.on('disconnect', () => {
+    if (currentRoom.name && currentRoom.player) {
+      currentRoom.player.delete(socket.nickname);
+      /* somewhat unnecessary in the new round case, but it shouldn't hurt either */
+      io.to(currentRoom.name).emit('players', Array.from(currentRoom.player));
+    }
+
     if (currentRoom.owner === socket.id)
       newRound();
     else {
       io.to(currentRoom.owner).emit('disconnects', socket.id)
-      if (currentRoom.name && currentRoom.player) {
-        currentRoom.player.delete(socket.nickname);
-        io.to(currentRoom.name).emit('players', Array.from(currentRoom.player));
-      }
     }
   });
 
