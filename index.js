@@ -33,7 +33,8 @@ function randomChoice(...arr) {
 io.on('connection', socket => {
   console.log('client connected: ', socket.id);
 
-  let currentRoom = {};
+  let currentRoom = {},
+      currentPlayer = { score: 0, present: true };
 
   socket.on('room', ({ name, mode }) => {
     console.log('room', socket.id, name, mode);
@@ -76,40 +77,40 @@ io.on('connection', socket => {
     }
   }
 
-  socket.on('disconnect', () => {
-    if (currentRoom.name && currentRoom.player) {
-      currentRoom.player.delete(socket.nickname);
-      /* somewhat unnecessary in the new round case, but it shouldn't hurt either */
+  function playersUpdated() {
+    if (currentRoom.name && currentRoom.player)
       io.to(currentRoom.name).emit('players', Array.from(currentRoom.player));
-    }
+  }
 
+  socket.on('disconnect', () => {
+    currentPlayer.present = false;
     if (currentRoom.owner === socket.id)
       newRound();
     else {
       io.to(currentRoom.owner).emit('disconnects', socket.id)
+      playersUpdated();
     }
   });
 
   socket.on('set nick', name => {
     if ('nickname' in socket) {
       if (socket.nickname === name) return;
-
-      currentRoom.player.set(name, currentRoom.player.get(socket.nickname));
       currentRoom.player.delete(socket.nickname);
-    } else if (typeof currentRoom.player != "undefined" && !currentRoom.player.has(name)) {
-      currentRoom.player.set(name, { score: 0 });
+    } else {
+      currentPlayer = currentRoom.player.get(name) || currentPlayer;
     }
+    currentRoom.player.set(name, currentPlayer);
 
     socket.nickname = name;
-    if (typeof currentRoom.player != "undefined") {
-      io.to(currentRoom.name).emit('players', Array.from(currentRoom.player));
-    }
+    currentPlayer.present = true;
+    playersUpdated();
   });
 
-  socket.on('chat', msg => {
-    msg = msg.trim();
-    io.to(currentRoom.name).emit('chat', socket.nickname, msg);
-  });
+  socket.on('chat', msg => io.to(currentRoom.name).emit('chat', {
+    name: socket.nickname,
+    type: 'msg',
+    msg
+  }));
 
   socket.on('clock', ({ deadline, now }) => {
     deadline += Date.now() - now;
@@ -135,8 +136,8 @@ io.on('connection', socket => {
     if (socket.id == currentRoom.owner) {
       if (!currentRoom.score_changed) {
         currentRoom.score_changed = true;
-        currentRoom.player.get(name).score++;
-        io.to(currentRoom.name).emit('chat', name, '(win)');
+        currentPlayer.score++;
+        io.to(currentRoom.name).emit('chat', { name, type: 'win' });
         newRound();
       }
     }

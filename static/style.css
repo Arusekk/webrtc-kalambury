@@ -234,6 +234,10 @@ input:checked + .tool {
   text-align: center;
 }
 
+#playerList > li.absent {
+  opacity: 0.3;
+}
+
 .drawingNow {
   background: var(--gradient);
 }
@@ -248,7 +252,7 @@ input:checked + .tool {
   overflow-wrap: break-word;
 }
 
-.chatMessage {
+.chatMessage, .serverMessage {
   padding: 0.5em;
 }
 
@@ -268,8 +272,12 @@ input:checked + .tool {
   font-weight: bold;
 }
 
-.chatName::after {
+.chatMessage .chatName::after {
   content: ': ';
+}
+
+.serverMessage .chatName::after {
+  content: ' ';
 }
 
 #gameCanvas, #chatArea, #lobbyMain, #gameSidebar,

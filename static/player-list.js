@@ -4,6 +4,7 @@ function setupPlayerList() {
 
     players.forEach(([name, data]) => {
       const elem = document.createElement('li');
+      elem.className = data.present ? 'present' : 'absent';
       elem.textContent = `${name} (${data.score})`;
       newList.appendChild(elem);
     });

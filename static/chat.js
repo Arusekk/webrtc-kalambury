@@ -1,13 +1,19 @@
 function chat(chatInput) {
-  signaler.emit('chat', chatInput.value);
+  const val = chatInput.value.trim();
+  if (val)
+    signaler.emit('chat', val);
   chatInput.value = '';
 }
 
-function addChatMessage(name, msg, isDrawing) {
-  const item = document.createElement('div');
-  item.className = 'chatMessage';
+const messages = {
+    win: 'wygrywa!'
+}
 
-  if (isDrawing) {
+function addChatMessage({ name, msg, type }, isDrawing) {
+  const item = document.createElement('div');
+  item.className = type === 'msg' ? 'chatMessage' : 'serverMessage';
+
+  if (isDrawing && type === 'msg' && name !== sessionStorage.getItem('nickname')) {
     const acceptButton = document.createElement('button');
     acceptButton.textContent = '✓';
     acceptButton.onclick = () => signaler.emit('add point', name);
@@ -20,7 +26,7 @@ function addChatMessage(name, msg, isDrawing) {
   chatName.textContent = name;
 
   const chatText = document.createElement('span');
-  chatText.textContent = msg;
+  chatText.textContent = type === 'msg' ? msg : messages[type];
 
   item.appendChild(chatName);
   item.appendChild(chatText);
@@ -37,5 +43,5 @@ function addChatMessage(name, msg, isDrawing) {
 }
 
 function setupChat(isDrawing) {
-  signaler.on('chat', (sender, msg) => addChatMessage(sender, msg, isDrawing));
+  signaler.on('chat', msg => addChatMessage(msg, isDrawing));
 }
