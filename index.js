@@ -2,13 +2,14 @@ const http = require('http');
 const express = require('express');
 const socket = require('socket.io');
 const crypto = require('crypto');
+const fs = require("fs");
 
 const hmacSecret = process.env.SECRET || (() => { throw new Error('SECRET not set') })();
 const app = express();
 const server = http.createServer(app);
 const io = socket(server);
 
-const dictionary = ["pies", "kapibara", "nurek", "ciasto", "inne przykładowe słowa"];
+var dictionary = {};
 
 app.set('views', './views');
 app.set('view engine', 'pug');
@@ -36,11 +37,20 @@ function genHmac(data) {
   return crypto.createHmac('sha256', hmacSecret).update(data).digest('hex');
 }
 
+function makeDictionary() {
+  var textFromFile = fs.readFileSync('word-list.txt', 'utf-8').toString();
+  dictionary = textFromFile.trim().split("\n");
+}
+
+makeDictionary()
+
 io.on('connection', socket => {
   console.log('client connected: ', socket.id);
 
   let currentRoom = {},
       currentPlayer = { score: 0, present: true };
+
+
 
   socket.on('room', ({ name, mode }) => {
     console.log('room', socket.id, name, mode);
@@ -145,6 +155,7 @@ io.on('connection', socket => {
 
     deadline += Date.now() - now;
     currentRoom.deadline = deadline;
+
     io.to(currentRoom.owner).emit('random word', randomChoice(...dictionary));
     socket.to(currentRoom.name).emit('clock', { deadline, now: Date.now() });
   });
