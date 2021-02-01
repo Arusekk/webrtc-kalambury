@@ -157,10 +157,11 @@ io.on('connection', socket => {
 
   socket.on('add point', name => {
     console.log(name, currentRoom.owner)
-    if (socket.id == currentRoom.owner) {
+    if (socket.id == currentRoom.owner && currentRoom.player.has(name)) {
       if (!currentRoom.score_changed) {
         currentRoom.score_changed = true;
-        currentPlayer.score++;
+        currentPlayer.score += 2;
+        currentRoom.player.get(name).score += 1;
         io.to(currentRoom.name).emit('chat', { name, type: 'win' });
         newRound();
       }
