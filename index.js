@@ -130,21 +130,25 @@ io.on('connection', socket => {
     playersUpdated();
   });
 
-  socket.on('chat', msg => io.to(currentRoom.name).emit('chat', {
-    name: socket.nickname,
-    type: 'msg',
-    msg
-  }));
+  socket.on('chat', msg => {
+    if (!('name' in currentRoom) || !('nickname' in socket)) return;
+
+    io.to(currentRoom.name).emit('chat', {
+      name: socket.nickname,
+      type: 'msg',
+      msg
+    });
+  });
 
   socket.on('clock', ({ deadline, now }) => {
+    if (!('name' in currentRoom) || 'deadline' in currentRoom) return;
+
     deadline += Date.now() - now;
     currentRoom.deadline = deadline;
     randomNumber = Math.floor(Math.random() * (dictionary.length));
     io.to(currentRoom.owner).emit('randomWord', dictionary[randomNumber]);
     socket.to(currentRoom.name).emit('clock', { deadline, now: Date.now() });
   });
-
-
 
   socket.on('clock end', () => {
     delete currentRoom.deadline;
