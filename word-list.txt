@@ -21,16 +21,12 @@ nietoperz
 nurek
 owca
 pies
-QEMU
 ryś
 Sokrates
 stół
 struś
 świstak
 tygrys
-Verilog
 wiewiórka
-X11
-YAML
 zając
 żółw
