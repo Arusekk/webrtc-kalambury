@@ -16,7 +16,7 @@ block header
   .playerInfo
     #nickname
     button(
-      onclick='setNickname(prompt("Nowa nazwa:").trim() || nickname.textContent)'
+      onclick='showNicknameInput()'
     ) Zmień nick
 
 block content
@@ -39,3 +39,7 @@ block content
       form#chatForm(action='' onsubmit='chat(chatInput); return false')
         input#chatInput(type='text' autocomplete='off')
         button Wyślij
+    #nickModal
+      form(action='' onsubmit='submitNicknameInput(); return false') Nowy nick:
+        input#nickInput(type='text' autocomplete='off')
+        button Zmień

@@ -80,6 +80,17 @@ function setNickname(value) {
   restoreNickname({ value });
 }
 
+function showNicknameInput() {
+  nickModal.style.visibility = 'visible';
+  nickInput.focus();
+}
+
+function submitNicknameInput() {
+  setNickname(nickInput.value.trim() || nickname.textContent);
+  nickModal.style.visibility = 'hidden';
+  nickInput.value = '';
+}
+
 function postRoomJoin() {
   const nickname = JSON.parse(sessionStorage.getItem('nickname')) ||
     { value: `Gracz${Math.floor(Math.random() * 1e4)}` };
