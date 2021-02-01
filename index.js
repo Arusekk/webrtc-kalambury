@@ -145,8 +145,7 @@ io.on('connection', socket => {
 
     deadline += Date.now() - now;
     currentRoom.deadline = deadline;
-    randomNumber = Math.floor(Math.random() * (dictionary.length));
-    io.to(currentRoom.owner).emit('randomWord', dictionary[randomNumber]);
+    io.to(currentRoom.owner).emit('random word', randomChoice(...dictionary));
     socket.to(currentRoom.name).emit('clock', { deadline, now: Date.now() });
   });
 
