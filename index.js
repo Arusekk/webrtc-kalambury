@@ -39,7 +39,7 @@ function genHmac(data) {
 io.on('connection', socket => {
   console.log('client connected: ', socket.id);
 
-  let currentRoom = {},
+  let currentRoom = { player: new Map() },
       currentPlayer = { score: 0, present: true };
 
   socket.on('room', ({ name, mode }) => {

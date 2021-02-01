@@ -13,7 +13,7 @@ function addChatMessage({ name, msg, type }, isDrawing) {
   const item = document.createElement('div');
   item.className = type === 'msg' ? 'chatMessage' : 'serverMessage';
 
-  if (isDrawing && type === 'msg' && name !== sessionStorage.getItem('nickname')) {
+  if (isDrawing && type === 'msg' && name !== nickname.textContent) {
     const acceptButton = document.createElement('button');
     acceptButton.textContent = '✓';
     acceptButton.onclick = () => signaler.emit('add point', name);

@@ -91,7 +91,13 @@ function submitNicknameInput() {
   nickInput.value = '';
 }
 
-function postRoomJoin() {
+function getRoomName() {
+  return decodeURIComponent(location.hash.slice(1))
+}
+
+function joinRoom(mode) {
+  signaler.emit('room', { name: getRoomName(), mode });
+
   const nickname = JSON.parse(sessionStorage.getItem('nickname')) ||
     { value: `Gracz${Math.floor(Math.random() * 1e4)}` };
   restoreNickname(nickname);
