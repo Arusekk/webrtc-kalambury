@@ -52,28 +52,28 @@ function setupGameIO(isDrawing) {
   })
 }
 
-function restoreNickname(nick) {
+async function restoreNickname(nick) {
   if (nick.value === nickname.textContent) return;
 
-  signaler.emit('set nick', nick, response => {
-    switch (response.result) {
-      case 'ok':
-        nickname.textContent = nick.value;
-        sessionStorage.setItem(
-          'nickname',
-          JSON.stringify({ value: nick.value, mac: response.mac })
-        );
-        break;
-      case 'reject':
-        console.log('setNickname: nickname rejected:', response.reason);
-        if (response.reason === 'duplicate')
-          restoreNickname({ value: nick.value + '_' });
-        break;
-      default:
-        console.log('setNickname: unknown result type');
-        break;
-    }
-  });
+  const response = await new Promise(resolve => signaler.emit('set nick', nick, resolve));
+
+  switch (response.result) {
+    case 'ok':
+      nickname.textContent = nick.value;
+      sessionStorage.setItem(
+        'nickname',
+        JSON.stringify({ value: nick.value, mac: response.mac })
+      );
+      break;
+    case 'reject':
+      console.log('setNickname: nickname rejected:', response.reason);
+      if (response.reason === 'duplicate')
+        restoreNickname({ value: nick.value + '_' });
+      break;
+    default:
+      console.log('setNickname: unknown result type');
+      break;
+  }
 }
 
 function setNickname(value) {
