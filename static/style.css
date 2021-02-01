@@ -190,6 +190,7 @@ input:checked + .tool {
 }
 
 #clockDisplay {
+  visibility: hidden;
   position: absolute;
   top: 0;
   right: 0;

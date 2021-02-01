@@ -5,6 +5,7 @@ class Picture {
     this.ctx = canvas.getContext('2d');
     this.isPointerDown = false;
     this.pos = {x : 0, y : 0};
+    this.locked = false;
 
     canvas.id = canvasId;
     canvas.width = width;
@@ -14,6 +15,7 @@ class Picture {
   }
 
   draw(x1, y1, x2, y2) {
+    if (this.locked) return;
     this.ctx.beginPath();
     this.ctx.moveTo(x1, y1);
     this.ctx.lineTo(x2, y2);
@@ -39,6 +41,7 @@ class Picture {
   }
 
   clear() {
+    if (this.locked) return;
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
   }
 }

@@ -7,6 +7,7 @@ function startCountdown(deadline) {
   }
 
   clockButton.disabled = true;
+  clockDisplay.style.visibility = 'visible';
   const r = document.querySelector(':root');
   const x = setInterval(() => {
     const timeLeft = deadline - Date.now();
@@ -20,7 +21,6 @@ function startCountdown(deadline) {
     if (timeLeft <= 0) {
       clearInterval(x);
       progress = minutes = seconds = 0;
-      signaler.emit('clock end');
       stopCountdown();
     } else {
       const time = `${minutes}:${seconds.toString().padStart(2,0)}`;
@@ -32,8 +32,8 @@ function startCountdown(deadline) {
 }
 
 function stopCountdown () {
-  clock.textContent = "Timer";
-  clockButton.disabled = false;
+  clock.textContent = "Koniec!";
+  picture.locked = true;
 }
 
 function setupClock() {

@@ -150,10 +150,6 @@ io.on('connection', socket => {
     socket.to(currentRoom.name).emit('clock', { deadline, now: Date.now() });
   });
 
-  socket.on('clock end', () => {
-    delete currentRoom.deadline;
-  });
-
   socket.on('nextRound', () => {
     delete currentRoom.deadline;
     newRound();
