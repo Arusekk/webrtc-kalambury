@@ -1,7 +1,6 @@
 function randomWord () {
-
   signaler.on('randomWord', word => {
-    console.log(word);
-    alert(word);
+    guessWord.textContent = word;
+    guessWord.parentElement.style.visibility = 'visible';
   });
 }

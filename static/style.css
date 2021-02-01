@@ -10,7 +10,7 @@
 
   --circle-size: 80px;
   --circle-background: #d6dadc;
-  --circle-color: #97a71d;
+  --circle-color: #b1a6d8;
   --transition-length: 0.3s;
 
   --clock-fill: 0deg;
@@ -28,7 +28,7 @@ body {
   align-items: center;
   justify-content: space-between;
   margin: 0;
-  padding: 0.1em 2em;
+  padding: 0.4em 2em;
   background: var(--gradient);
 }
 
@@ -61,6 +61,7 @@ button, .newRoom {
   padding: 0.5em;
   background: var(--accent-bg);
   color: var(--dark-fg);
+  font: inherit;
   text-align: center;
 }
 
@@ -210,10 +211,29 @@ input:checked + .tool {
   font-weight: bold;
 }
 
+.headerBig {
+  visibility: hidden;
+  font-size: 1.7em;
+}
+
+#guessWord {
+  font-weight: bold;
+  animation: blink 1s ease-in-out infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 30%; }
+}
+
+.playerInfo {
+  display: flex;
+  align-items: center;
+}
+
 #nickname {
+  margin: 0 1em;
   font-size: 1.1em;
   font-weight: bold;
-  cursor: pointer;
 }
 
 #chatArea, #gameSidebar {

@@ -11,10 +11,13 @@ block head
   block scripts
 
 block header
-  div
-    #nickname(
+  .headerBig Słowo: 
+    span#guessWord
+  .playerInfo
+    #nickname
+    button(
       onclick='setNickname(prompt("Nowa nazwa:").trim() || nickname.textContent)'
-    )
+    ) Zmień nick
 
 block content
   main#gameMain
