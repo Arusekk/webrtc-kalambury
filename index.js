@@ -1,7 +1,9 @@
 const http = require('http');
 const express = require('express');
 const socket = require('socket.io');
+const crypto = require('crypto');
 
+const hmacSecret = process.env.SECRET || (() => { throw new Error('SECRET not set') })();
 const app = express();
 const server = http.createServer(app);
 const io = socket(server);
@@ -30,6 +32,10 @@ function randomChoice(...arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
+function genHmac(data) {
+  return crypto.createHmac('sha256', hmacSecret).update(data).digest('hex');
+}
+
 io.on('connection', socket => {
   console.log('client connected: ', socket.id);
 
@@ -41,11 +47,12 @@ io.on('connection', socket => {
     socket.join(name);
 
     if (mode === 'draw') {
-      currentRoom = { owner: socket.id, name, player: new Map(), score_changed: false };
+      currentRoom = { owner: socket.id, name, timestamp: Date.now(), player: new Map(), score_changed: false };
       const oldRoom = room.get(name);
       if (oldRoom !== undefined) {
         delete oldRoom.name;
 
+        currentRoom.timestamp = oldRoom.timestamp;
         currentRoom.player = oldRoom.player;
         socket.to(name).emit('new round', false);
       }
@@ -92,16 +99,33 @@ io.on('connection', socket => {
     }
   });
 
-  socket.on('set nick', name => {
+  socket.on('set nick', ({ value, mac }, callback) => {
+    // validate name
+    if (!('player' in currentRoom)) {
+      callback({ result: 'reject', reason: 'not ready' });
+      return;
+    }
+
+    const computedMac =
+      genHmac(`${currentRoom.timestamp}:${currentRoom.name}:${value}`);
+
+    if (currentRoom.player.has(value) && computedMac !== mac) {
+      callback({ result: 'reject', reason: 'duplicate' });
+      return;
+    }
+
+    // proceed with the happy path
+    callback({ result: 'ok', mac: computedMac });
+
     if ('nickname' in socket) {
-      if (socket.nickname === name) return;
+      if (socket.nickname === value) return;
       currentRoom.player.delete(socket.nickname);
     } else {
-      currentPlayer = currentRoom.player.get(name) || currentPlayer;
+      currentPlayer = currentRoom.player.get(value) || currentPlayer;
     }
-    currentRoom.player.set(name, currentPlayer);
+    currentRoom.player.set(value, currentPlayer);
 
-    socket.nickname = name;
+    socket.nickname = value;
     currentPlayer.present = true;
     playersUpdated();
   });

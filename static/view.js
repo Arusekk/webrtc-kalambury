@@ -16,6 +16,7 @@ function handleViewMessage(msg) {
       break;
     case 'clear':
       picture.clear();
+      break;
     case 'img':
       const img = new Image();
       img.onload = () => picture.ctx.drawImage(img, 0, 0);

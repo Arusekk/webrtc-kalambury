@@ -17,7 +17,7 @@ function getRTCPeerConnection(addr) {
     signaler.emit('webrtc to', { sdp: pc.localDescription, addr })
   }
 
-  onsdp = async sdp => {
+  const onsdp = async sdp => {
     // tell us who they are
     await pc.setRemoteDescription(sdp)
     if (pc.signalingState !== 'stable') {
@@ -52,23 +52,42 @@ function setupGameIO(isDrawing) {
   })
 }
 
-function setNickname(name) {
-  nickname.textContent = name;
-  sessionStorage.setItem('nickname', name);
-  signaler.emit('set nick', name);
+function restoreNickname(nick) {
+  if (nick.value === nickname.textContent) return;
+
+  signaler.emit('set nick', nick, response => {
+    switch (response.result) {
+      case 'ok':
+        nickname.textContent = nick.value;
+        sessionStorage.setItem(
+          'nickname',
+          JSON.stringify({ value: nick.value, mac: response.mac })
+        );
+        break;
+      case 'reject':
+        console.log('setNickname: nickname rejected:', response.reason);
+        if (response.reason === 'duplicate')
+          restoreNickname({ value: nick.value + '_' });
+        break;
+      default:
+        console.log('setNickname: unknown result type');
+        break;
+    }
+  });
 }
 
-// TODO: consider sending an initial nickname along with `room` instead
+function setNickname(value) {
+  restoreNickname({ value });
+}
+
 function postRoomJoin() {
-  const nickname = sessionStorage.getItem('nickname') ||
-    `Gracz${Math.floor(Math.random() * 1e4)}`;
-  setNickname(nickname);
+  const nickname = JSON.parse(sessionStorage.getItem('nickname')) ||
+    { value: `Gracz${Math.floor(Math.random() * 1e4)}` };
+  restoreNickname(nickname);
 }
-
 
 function nextRound() {
   signaler.emit('nextRound');
 }
-
 
 // vim: set et ts=2 sw=2: kate: replace-tabs on; indent-width 2; tab-width 2;
