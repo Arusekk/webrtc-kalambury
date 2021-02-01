@@ -47,7 +47,7 @@ makeDictionary()
 io.on('connection', socket => {
   console.log('client connected: ', socket.id);
 
-  let currentRoom = {},
+  let currentRoom = { player: new Map() },
       currentPlayer = { score: 0, present: true };
 
 

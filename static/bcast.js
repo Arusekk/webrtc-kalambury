@@ -33,9 +33,7 @@ window.addEventListener('load', () => {
   })
 
   // create the room now that we are ready
-  signaler.emit('room', { name: location.hash.slice(1), mode: 'draw' })
-
-  postRoomJoin();
+  joinRoom('draw')
 })
 
 // vim: set et ts=2 sw=2: kate: replace-tabs on; indent-width 2; tab-width 2;
